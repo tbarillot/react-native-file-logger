@@ -106,7 +106,7 @@ Return the current log level.
 
 Returns a promise with the absolute paths to the log files.
 
-#### FileLogger.readLogFiles(): Promise<string>
+#### FileLogger.readLogFiles(): Promise\<string>
 
 Returns a promise with the concatenated content of all log files. This is useful for debugging or when you need to access the full log content programmatically.
 

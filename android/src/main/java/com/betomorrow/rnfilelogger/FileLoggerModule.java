@@ -160,6 +160,27 @@ public class FileLoggerModule extends FileLoggerSpec {
     }
 
     @ReactMethod
+    public void readLogFiles(Promise promise) {
+        try {
+            StringBuilder concatenatedContent = new StringBuilder();
+            for (File logFile: getLogFiles()) {
+                try {
+                    java.nio.file.Path path = logFile.toPath();
+                    String fileContent = new String(java.nio.file.Files.readAllBytes(path), "UTF-8");
+                    concatenatedContent.append(fileContent);
+                    concatenatedContent.append("\n");
+                } catch (Exception e) {
+                    promise.reject("ReadError", "Failed to read log file: " + e.getMessage(), e);
+                    return;
+                }
+            }
+            promise.resolve(concatenatedContent.toString());
+        } catch (Exception e) {
+            promise.reject(e);
+        }
+    }
+
+    @ReactMethod
     public void deleteLogFiles(Promise promise) {
         try {
             for (File file: getLogFiles()) {

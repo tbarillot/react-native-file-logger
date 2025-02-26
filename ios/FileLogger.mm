@@ -72,6 +72,26 @@ RCT_EXPORT_METHOD(getLogFilePaths:(RCTPromiseResolveBlock)resolve reject:(RCTPro
     resolve(self.fileLogger.logFileManager.sortedLogFilePaths);
 }
 
+RCT_EXPORT_METHOD(readLogFiles:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    NSArray<NSString*>* logFiles = self.fileLogger.logFileManager.sortedLogFilePaths;
+    NSMutableString* concatenatedContent = [NSMutableString string];
+    
+    for (NSString* logFile in logFiles) {
+        NSError* error = nil;
+        NSString* fileContent = [NSString stringWithContentsOfFile:logFile encoding:NSUTF8StringEncoding error:&error];
+        
+        if (error) {
+            reject(@"ReadError", [NSString stringWithFormat:@"Failed to read log file: %@", error.localizedDescription], error);
+            return;
+        }
+        
+        [concatenatedContent appendString:fileContent];
+        [concatenatedContent appendString:@"\n"];
+    }
+    
+    resolve(concatenatedContent);
+}
+
 RCT_EXPORT_METHOD(deleteLogFiles:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
     [self.fileLogger rollLogFileWithCompletionBlock:^{
         for (DDLogFileInfo* logFileInfo in [self.fileLogger.logFileManager unsortedLogFileInfos]) {
@@ -159,6 +179,10 @@ RCT_EXPORT_METHOD(sendLogFilesByEmail:(NSDictionary*)options resolver:(RCTPromis
 - (void)write:(double)level msg:(NSString *)msg {
     NSNumber* _Nonnull logLevel = [NSNumber numberWithInt:level];
     [self write:logLevel str:msg];
+}
+
+- (NSString *)readLogFiles:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+    return [self readLogFiles:resolve reject:reject];
 }
 
 NSArray<NSString *> *convertToNSArray(std::optional<FB::LazyVector<NSString *, id>> optional) {

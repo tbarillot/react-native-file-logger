@@ -20,6 +20,7 @@ export interface Spec extends TurboModule {
 	getLogFilePaths(): Promise<string[]>;
 	deleteLogFiles(): Promise<void>;
 	sendLogFilesByEmail(options: SendByEmailOptions): Promise<void>;
+	readLogFiles(): Promise<string>;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>("FileLogger");

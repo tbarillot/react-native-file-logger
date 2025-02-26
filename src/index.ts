@@ -88,6 +88,10 @@ class FileLoggerStatic {
 		return RNFileLogger.deleteLogFiles();
 	}
 
+	readLogFiles(): Promise<string> {
+		return RNFileLogger.readLogFiles();
+	}
+
 	sendLogFilesByEmail(options: SendByEmailOptions = {}): Promise<void> {
 		if (options.to) {
 			const toEmails = Array.isArray(options.to) ? options.to : [options.to];

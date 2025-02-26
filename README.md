@@ -46,6 +46,20 @@ FileLogger.configure();
 
 This is all you need to add file-logging to your app. All your existing `console` calls will be appended to a log file. `FileLogger.configure()` also takes options to customize the rolling policy, log directory path or log-level. If you don't want to use `console` calls for logging, you can also use the [direct access API](#direct-access-api).
 
+### Reading log files
+
+You can read the content of all log files using the `readLogFiles` method:
+
+```typescript
+// Example: Reading log files
+FileLogger.readLogFiles().then(logContent => {
+  console.log(logContent);
+  // or do something else with the log content
+}).catch(error => {
+  console.error('Failed to read log files:', error);
+});
+```
+
 ## API
 
 #### FileLogger.configure(options?): Promise
@@ -91,6 +105,10 @@ Return the current log level.
 #### FileLogger.getLogFilePaths(): Promise<string[]>
 
 Returns a promise with the absolute paths to the log files.
+
+#### FileLogger.readLogFiles(): Promise<string>
+
+Returns a promise with the concatenated content of all log files. This is useful for debugging or when you need to access the full log content programmatically.
 
 #### FileLogger.deleteLogFiles(): Promise
 
